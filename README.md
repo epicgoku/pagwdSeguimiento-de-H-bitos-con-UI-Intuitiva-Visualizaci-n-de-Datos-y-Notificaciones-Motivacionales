@@ -1,16 +1,18 @@
 #"Aplicación de Seguimiento de Hábitos con UI Intuitiva, Visualización de Datos y Notificaciones Motivacionales"
 aplicacion para mejorar tus habitos y mejorar tus metas
-Interfaz gráfica con Python:
-
-Usaremos PyQt para la interfaz gráfica, ya que ofrece un diseño moderno y flexible, ideal para una UI intuitiva. Además, se puede integrar con bibliotecas de visualización de datos como Plotly.
-Inicialmente será una aplicación de escritorio, pero con la posibilidad de expandirse a versiones móviles utilizando frameworks como Kivy o crear una API con Flask para una versión web.
-Experiencia de usuario (UX/UI):
-
-El diseño será minimalista y limpio, priorizando la facilidad de uso y la rápida accesibilidad a las funcionalidades principales.
-Se implementarán notificaciones motivacionales y recordatorios personalizados utilizando bibliotecas como APScheduler o herramientas de notificación del sistema operativo.
-Se considerará incluir temas claros y oscuros para mejorar la experiencia visual.
-Visualización de datos:
-
-Utilizaremos Plotly para gráficos interactivos y atractivos que permitan al usuario visualizar su progreso.
-Se podrán generar gráficos de hábitos diarios, semanales, mensuales y comparativas históricas para identificar tendencias.
-También se incluirán gráficos tipo barra, línea y pastel según la naturaleza de los datos.
+Interfaz Gráfica con Python
+La UI se desarrollará con Kivy, ya que es fácil de usar y compatible con Windows, macOS, Linux, Android e iOS.
+Inicialmente, la aplicación será de escritorio, pero en el futuro se podrá expandir a móviles.
+Si se requiere una versión web o móvil, se podría integrar una API con Flask o Django, y usar React Native o Flutter para la app móvil.
+Experiencia de Usuario (UX/UI)
+Se utilizará un diseño limpio y minimalista con colores suaves y fuentes fáciles de leer.
+Se agregarán notificaciones automáticas y recordatorios motivacionales con APScheduler para ayudar a los usuarios a mantener sus hábitos.
+Se incluirá una opción para personalizar temas y colores, permitiendo a los usuarios adaptar la app a su estilo.
+Visualización de Datos
+Se usará Matplotlib para gráficos simples y Plotly si se necesitan gráficos interactivos.
+Se podrán ver los datos en diferentes periodos: diario, semanal, mensual y anual.
+Se permitirá comparar hábitos y metas para que el usuario pueda identificar patrones y mejorar su progreso.
+Resumen
+- Kivy para UI (fácil y compatible con escritorio/móvil).
+- APScheduler para notificaciones automáticas.
+- Matplotlib para gráficos simples y comparaciones de hábitos.
