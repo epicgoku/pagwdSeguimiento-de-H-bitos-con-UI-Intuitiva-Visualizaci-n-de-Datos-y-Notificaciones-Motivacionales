@@ -1,4 +1,4 @@
-# Tu-mejor-version
+#"Aplicación de Seguimiento de Hábitos con UI Intuitiva, Visualización de Datos y Notificaciones Motivacionales"
 aplicacion para mejorar tus habitos y mejorar tus metas
 Interfaz gráfica con Python:
 
