@@ -1,61 +1,76 @@
-pagina web Seguimiento de Hábitos con UI Intuitiva, Visualización de Datos y Notificaciones Motivacionales
-La aplicación será una página web responsiva que permitirá a los usuarios monitorear sus hábitos diarios, semanales y mensuales, ayudándolos a alcanzar sus metas personales. Se ofrecerán gráficos interactivos y notificaciones motivacionales para mantener el compromiso.
+Descripción
+Habit Pro es una aplicación web diseñada para ayudar a los usuarios a establecer, monitorear y mejorar sus hábitos diarios, semanales y mensuales. Ofrece una interfaz intuitiva, gráficos interactivos y notificaciones motivacionales para mantener el compromiso y facilitar el seguimiento del progreso.
 
-+ Tecnologías y Herramientas
-Frontend:
-- HTML, CSS y JavaScript – Para una estructura ligera y accesible.
-- Bootstrap o Tailwind CSS – Para estilos modernos y diseño responsivo.
-- Chart.js o Plotly – Para la visualización de gráficos interactivos.
-- PWA (Progressive Web App) – Para permitir instalación en dispositivos móviles.
+💻 Tecnologías y Herramientas
+Interfaz
+✅ React – Para una interfaz rápida y dinámica.
+✅ Tailwind CSS – Para un diseño moderno y personalizable.
+✅ Chart.js o Recharts – Para visualización de datos con gráficos interactivos.
+✅ Framer Motion – Para animaciones suaves y atractivas.
+✅ PWA (Progressive Web App) – Permite que la aplicación se instale en dispositivos móviles como si fuera una aplicación nativa.
 
-Backend:
-- Flask o Django – Para manejar la lógica del servidor y la base de datos.
-- SQLite o PostgreSQL – Para almacenamiento de datos (hábitos, metas y progreso).
-- Celery o APScheduler – Para programar recordatorios y notificaciones automáticas.
+Backend
+✅ Flask o Django – Para manejar la lógica del servidor.
+✅ PostgreSQL o SQLite – Para el almacenamiento de hábitos, metas y progreso.
+✅ SQLAlchemy o Django ORM – Para interactuar con la base de datos de manera eficiente.
+✅ Flask-APScheduler o Celery – Para programar notificaciones automáticas y recordatorios.
 
-Notificaciones y Motivación:
-- Web Push API – Para enviar notificaciones al navegador.
-- Flask-Mail o Django Email – Para enviar recordatorios por correo.
+Notificaciones y motivación
+✅ Web Push API – Para enviar notificaciones al navegador.
+✅ Flask-Mail o Django Email – Para recordatorios por correo electrónico.
+✅ Mensajes motivacionales dinámicos que varían según el progreso del usuario.
 
-+ Experiencia de Usuario (UX/UI)
-Diseño Limpio y Minimalista:
-- Colores suaves y fuentes claras para una lectura cómoda.
-- Modo claro/oscuro para adaptarse a las preferencias del usuario.
-- Íconos modernos para una interfaz visualmente atractiva.
+🎨 Experiencia de Usuario (UX/UI)
+Diseño limpio y minimalista
+🎨 Colores suaves y fuentes legibles para una experiencia cómoda.
+🌙 Modo claro/oscuro para adaptarse a las preferencias del usuario.
+📌 Íconos modernos con Lucide Icons para una interfaz visualmente atractiva.
 
-Interactividad:
-- Animaciones sutiles al agregar o completar hábitos.
--Transiciones fluidas entre vistas para una experiencia agradable.
+Interactividad y usabilidad
+🔹 Animaciones sutiles al agregar o completar hábitos.
+🔹 Transiciones fluidas entre vistas para una navegación intuitiva.
+🔹 Menú lateral con acceso rápido a:
 
-Navegación:
-- Menú superior o lateral con acceso rápido a:
+📊 Panel de control
+✅ Hábitos
+📈 Progreso (gráficos)
+⚙️ Configuración
+📊 Visualización de datos
+📌 Gráficos de Progreso
+✅ Gráfico de barras para hábitos diarios.
+✅ Gráfico de líneas para monitoreo semanal o mensual.
+✅ Gráfico de pastel para visualizar el cumplimiento general de hábitos.
+✅ Comparación entre diferentes hábitos para identificar patrones.
 
-Dashboard
-Hábitos
-Progreso (gráficos)
-Configuración
-- Barra de búsqueda para encontrar hábitos específicos.
-+ Visualización de Datos
-Gráficos de Progreso:
-- Gráfico de barras para hábitos diarios.
-- Gráfico de líneas para monitoreo semanal o mensual.
-  - Gráfico de pastel para la distribución de cumplimiento de hábitos.
-  - Comparación de hábitos similares para identificar patrones.
+📌 Filtros Personalizables
+✅ Selección de rango de fechas.
+✅ Filtrado por categoría de hábitos (salud, productividad, estudio, etc.).
 
-Filtros Personalizables:
-- Selección de rango de fechas.
-- Filtrado por tipo de hábito (personal, académico, salud, etc.).
+🔔 Personalización de Notificaciones
+✅ Web Push API – Notificaciones en el navegador según las preferencias del usuario.
+✅ Opciones de personalización:
 
-+ Notificaciones Motivacionales
-- Web Push API + Celery/APScheduler para recordatorios automatizados.
-- Mensajes personalizados según el progreso del usuario.
-- Opciones de activación/desactivación de notificaciones en la configuración.
+Activar o desactivar notificaciones.
+Elegir horarios (mañana, tarde, noche).
+Frecuencia (diaria, semanal, mensual).
+✅ Mensajes dinámicos motivacionales según el progreso del usuario.
+💡 (Opcional en futuras versiones)
 
-+ Autenticación y Guardado en la Nube
-- Flask-Login o Django Auth para manejar el inicio de sesión.
-- Base de datos centralizada para almacenar el progreso del usuario.
+Notificaciones por SMS con Twilio .
+Notificaciones en móviles con Firebase Cloud Messaging .
+🌐 Autenticación y Seguridad
+✅ Firebase Auth o OAuth 2.0 – Para inicio de sesión con Google, Facebook o correo.
+✅ Almacenamiento seguro en PostgreSQL o SQLite .
+✅ Privacidad y permisos:
 
-+ Mejoras Futuras
-- Análisis de hábitos con IA – Sugerencias personalizadas basadas en el comportamiento del usuario.
-- Modo colaborativo – Compartir el progreso con amigos o unirse a grupos para desafíos compartidos.
-  - Widget de progreso diario – Vista rápida del progreso desde la pantalla de inicio del móvil.
+Configuración para compartir o no el progreso con amigos.
+Posibilidad de exportar datos personales.
+🚀 Mejoras futuras
+🎯 Análisis de Hábitos con IA
+
+Uso de algoritmos de aprendizaje automático para mejorar.
+🎯 Modo Colaborativo y Gamificación
+
+Comparte el progreso con amigos o participa en desafíos grupales.
+🎯 Widget de Progreso Diario
+Un widget que muestra el avance directamente en la pantalla de inicio del usuario.
