@@ -63,10 +63,7 @@ Firebase Auth o OAuth 2.0 – Para inicio de sesión con Google, Facebook o corr
 Almacenamiento seguro en PostgreSQL o SQLite .
 Privacidad y permisos:
 
-Configuración para compartir o no el progreso con amigos.
-Posibilidad de exportar datos personales.
-Mejoras futuras
-Análisis de Hábitos con IA
+
 
 Uso de algoritmos de aprendizaje automático para mejorar.
 Modo Colaborativo y Gamificación
