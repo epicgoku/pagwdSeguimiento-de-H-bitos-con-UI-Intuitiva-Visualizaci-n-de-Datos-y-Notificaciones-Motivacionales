@@ -125,3 +125,161 @@ const HabitForm = () => {
   };
 
   const handleSubmit = async e => {
+
+SEMANA 2
+
+1. Conectamos el frontend con el backend para almacenar datos
+---
+
+2. Implementamos el formulario de hábitos
+
+se crea el componente HabitForm.jsx:
+
+// client/src/components/HabitForm.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const HabitForm = () => {
+  const [form, setForm] = useState({
+    nombre: '',
+    frecuencia: '',
+    categoria: '',
+    dias: []
+  });
+
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleCheckbox = e => {
+    const value = e.target.value;
+    setForm(prev => ({
+      ...prev,
+      dias: prev.dias.includes(value)
+        ? prev.dias.filter(d => d !== value)
+        : [...prev.dias, value]
+    }));
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:5000/habits', form);
+      alert('¡Hábito guardado!');
+    } catch (error) {
+      console.error('Error al guardar el hábito:', error);
+      alert('Error al guardar el hábito.');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        name="nombre"
+        placeholder="Nombre del hábito"
+        onChange={handleChange}
+        required
+      />
+      <input
+        name="frecuencia"
+        placeholder="Frecuencia"
+        onChange={handleChange}
+      />
+      <input
+        name="categoria"
+        placeholder="Categoría"
+        onChange={handleChange}
+      />
+      <div>
+        {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map(dia => (
+          <label key={dia}>
+            <input
+              type="checkbox"
+              value={dia}
+              onChange={handleCheckbox}
+            />
+            {dia}
+          </label>
+        ))}
+      </div>
+      <button type="submit">Guardar Hábito</button>
+    </form>
+  );
+};
+
+export default HabitForm;
+
+
+---
+
+3. Probamps que los datos se guardan en la base de datos
+
+ya de ahi igresamos un nuevo hábito desde el formulario.
+
+se verifica en la terminal Flask que el hábito fue recibido.
+
+confirmamos en la base de datos SQLite (habitos.db) que el hábito aparece en la tabla.
+
+
+Front → Axios → Flask → SQLAlchemy → SQLite → Guardado.
+
+
+---
+
+SEMANA 3 
+
+1. Integramos los Recharts en React
+
+ya de ahi instalamos Recharts:
+
+npm install recharts
+
+
+---
+
+2. Creamos el componente de gráficos de hábitos
+
+se el archivo HabitCharts.jsx:
+
+// client/src/components/HabitCharts.jsx
+import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import axios from 'axios';
+
+const HabitCharts = () => {
+  const [habits, setHabits] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/habits')
+      .then(response => setHabits(response.data))
+      .catch(error => console.error(error));
+  }, []);
+
+  // Simulamos cumplimiento (número aleatorio de días cumplidos)
+  const data = habits.map(h => ({
+    nombre: h.nombre,
+    cumplimiento: Math.floor(Math.random() * 7) + 1 // entre 1 y 7 días
+  }));
+
+  return (
+    <div style={{ width: '100%', height: 300 }}>
+      <h2>Gráfica de Cumplimiento de Hábitos</h2>
+      <ResponsiveContainer>
+        <BarChart data={data}>
+          <XAxis dataKey="nombre" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="cumplimiento" fill="#82ca9d" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+export default HabitCharts;
+
+
+---
+
+
