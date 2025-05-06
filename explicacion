@@ -1,1 +1,25 @@
+El proyecto Habit Pro está dividido en dos partes: el backend desarrollado con Flask y el frontend construido con React. Su propósito es permitir a los usuarios registrar hábitos, visualizarlos en gráficos y recibir mensajes motivacionales.
 
+1. Backend en Flask (servidor)
+Se configura una aplicación Flask conectada a una base de datos SQLite usando SQLAlchemy. Se define un modelo de hábito con campos como nombre, frecuencia, categoría y los días que se planea cumplir. El servidor permite dos operaciones principales:
+
+Guardar un nuevo hábito mediante una solicitud POST.
+
+Recuperar todos los hábitos almacenados mediante una solicitud GET.
+
+Además, se implementa una ruta adicional que genera un mensaje motivacional personalizado según el nivel de cumplimiento del usuario y la duración de su racha actual.
+
+2. Base de datos SQLite
+Al iniciar el servidor, se crea automáticamente una base de datos SQLite ubicada en una carpeta separada. Allí se almacenan todos los hábitos ingresados por el usuario de forma persistente.
+
+3. Frontend en React (cliente)
+El frontend se compone de tres componentes principales:
+
+Formulario de hábitos: permite al usuario registrar un nuevo hábito llenando un formulario. Este formulario envía los datos al backend utilizando Axios.
+
+Gráfica de hábitos: consulta los hábitos almacenados en el servidor y los muestra en una gráfica de barras utilizando la biblioteca Recharts. La cantidad de días cumplidos se simula de forma aleatoria para efectos de prueba visual.
+
+Mensaje motivacional: realiza una solicitud al backend para obtener un mensaje motivador. Este mensaje se basa en un cumplimiento simulado del 75% y una racha simulada de 4 días. Se muestra con una animación usando Framer Motion.
+
+4. Integración final
+Todos los componentes se integran en la aplicación principal de React, de forma que el usuario puede registrar, visualizar y recibir motivación en una misma interfaz. La comunicación entre frontend y backend se realiza a través de peticiones HTTP usando Axios.
