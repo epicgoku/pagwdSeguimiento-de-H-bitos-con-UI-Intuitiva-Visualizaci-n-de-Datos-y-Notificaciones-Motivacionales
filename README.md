@@ -71,3 +71,4 @@ Modo Colaborativo y Gamificación
 Comparte el progreso con amigos o participa en desafíos grupales.
 Widget de Progreso Diario
 Un widget que muestra el avance directamente en la pantalla de inicio del usuario.
+
