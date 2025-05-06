@@ -278,8 +278,82 @@ const HabitCharts = () => {
 };
 
 export default HabitCharts;
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/motivacion', methods=['GET'])
+def obtener_mensaje_motivacional():
+    # Simulación de datos por ahora
+    porcentaje_cumplido = 75
+    racha = 4
+
+    mensaje = ""
+    if porcentaje_cumplido >= 80:
+        mensaje = "¡Estás haciendo un trabajo excelente!"
+    elif porcentaje_cumplido >= 50:
+        mensaje = "¡Vas bien, sigue así!"
+    else:
+        mensaje = "¡No te rindas, cada pequeño paso cuenta!"
+
+    if racha >= 7:
+        mensaje += " ¡Una semana completa, increíble!"
+    elif racha >= 3:
+        mensaje += " ¡Estás en racha!"
+
+    return jsonify({'mensaje': mensaje})
+
+if __name__ == "__main__":
+    app.run(debug=True)
+// client/src/components/MotivationalMessage.jsx
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+
+const MotivationalMessage = () => {
+  const [mensaje, setMensaje] = useState('');
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/motivacion')
+      .then(res => setMensaje(res.data.mensaje))
+      .catch(err => console.error('Error al obtener el mensaje:', err));
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-blue-100 p-4 rounded-xl shadow text-blue-800 font-semibold mt-4"
+    >
+      {mensaje}
+    </motion.div>
+  );
+};
+
+export default MotivationalMessage;
+// client/src/App.jsx
+import React from 'react';
+import HabitForm from './components/HabitForm';
+import HabitCharts from './components/HabitCharts';
+import MotivationalMessage from './components/MotivationalMessage';
+
+function App() {
+  return (
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">Habit Pro</h1>
+      <MotivationalMessage />
+      <HabitForm />
+      <HabitCharts />
+    </div>
+  );
+}
+
+export default App;
+npm install axios framer-motion
 
 
----
+
+
 
 
