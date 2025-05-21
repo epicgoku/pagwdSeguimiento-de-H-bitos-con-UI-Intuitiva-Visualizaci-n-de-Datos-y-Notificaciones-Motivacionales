@@ -354,15 +354,14 @@ npm install axios framer-motion
 
 ---------------------------------------------------------------ULTIMOS AVANCES DEL PROYECTO----------------------------------------------------------------------- 
 
-APP.PY 
-
+app.py
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
-from datetime import date
-import random  
+from datetime import date, datetime, timedelta
+import random
 
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta_aqui'  
+app.secret_key = 'tu_clave_secreta_aqui'
 
 def get_db_connection():
     conn = sqlite3.connect('habits.db')
@@ -378,7 +377,6 @@ def query_db(query, args=(), one=False):
     conn.close()
     return (rv[0] if rv else None) if one else rv
 
-# mensajes motivacionales
 motivational_messages = [
     "¡Sigue así, vas por buen camino! 💫",
     "Cada paso cuenta. ¡Buen trabajo! 🚀",
@@ -389,14 +387,49 @@ motivational_messages = [
     "¡Tu esfuerzo está dando frutos! 🍀"
 ]
 
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days) + 1):
+        yield start_date + timedelta(n)
+
 @app.route('/')
 def index():
     habits = query_db('SELECT * FROM habits ORDER BY id DESC')
     logs = query_db('SELECT habit_id, date FROM habit_logs')
-    habit_progress = {}
+
+    logs_dict = {}
     for log in logs:
-        habit_progress.setdefault(log['habit_id'], []).append(log['date'])
-    return render_template('index.html', habits=habits, habit_progress=habit_progress)
+        logs_dict.setdefault(log['habit_id'], set()).add(log['date'])
+
+    habit_progress = {}
+    habits_not_done_today = []
+
+    today_str = date.today().isoformat()
+
+    for habit in habits:
+        start = datetime.strptime(habit['start_date'], "%Y-%m-%d").date()
+        end = date.today()
+        dates_list = []
+        completed_list = []
+
+        for single_date in daterange(start, end):
+            str_date = single_date.isoformat()
+            dates_list.append(str_date)
+            completed_list.append(1 if str_date in logs_dict.get(habit['id'], set()) else 0)
+
+        if today_str not in logs_dict.get(habit['id'], set()):
+            habits_not_done_today.append(habit['name'])
+
+        habit_progress[habit['id']] = {
+            "dates": dates_list,
+            "completed": completed_list
+        }
+
+    return render_template(
+        'index.html',
+        habits=habits,
+        habit_progress=habit_progress,
+        habits_not_done_today=habits_not_done_today
+    )
 
 @app.route('/add', methods=['POST'])
 def add_habit():
@@ -437,8 +470,8 @@ def delete_habit(habit_id):
 if __name__ == '__main__':
     app.run(debug=True)
 
-INDEX.HTML 
 
+index.html--------------------------------------------------------------------------------------------------------------------------------------
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -446,141 +479,92 @@ INDEX.HTML
     <title>Mis Hábitos</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@500&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-            margin: 0;
+            max-width: 900px;
+            margin: auto;
             padding: 20px;
-            color: #222;
+            background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
+            color: #fff;
         }
-        header h1 {
-            font-family: 'Fredoka One', cursive;
+        header {
             text-align: center;
-            color: white;
             margin-bottom: 20px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
         .hero-image {
             display: block;
             max-width: 300px;
-            margin: 0 auto 30px auto;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 0 auto 30px;
         }
         .form-container {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
-            max-width: 600px;
-            margin: 0 auto 30px auto;
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        input[type="text"],
-        textarea,
-        select,
-        input[type="date"] {
+        form input, form select, form textarea, form button {
+            display: block;
             width: 100%;
+            margin-bottom: 12px;
             padding: 10px;
-            margin: 10px 0 15px 0;
-            border: 2px solid #66a6ff;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
-        }
-        button[type="submit"] {
-            background-color: #ff6f91;
-            color: white;
-            font-weight: 600;
+            font-size: 1em;
+            border-radius: 6px;
             border: none;
-            padding: 12px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: background-color 0.3s ease;
+            box-sizing: border-box;
         }
-        button[type="submit"]:hover {
-            background-color: #ff4c6d;
+        form button {
+            background-color: #ff7e5f;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
         }
         .flash-messages {
-            max-width: 600px;
-            margin: 0 auto 20px auto;
-            padding: 10px;
+            background: #ffeeba;
+            color: #856404;
+            padding: 15px;
             border-radius: 10px;
-            background-color: #ffefc4;
-            color: #665200;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
         .habit-list {
-            max-width: 600px;
-            margin: 0 auto 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
         }
         .habit {
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
         }
         .habit h3 {
-            margin-top: 0;
-            font-family: 'Fredoka One', cursive;
-            color: #66a6ff;
+            margin: 0 0 10px;
         }
         .habit p {
-            font-size: 0.95rem;
-            margin: 5px 0 15px 0;
+            margin: 0 0 15px;
         }
-        .habit form {
-            display: inline-block;
-            margin-right: 10px;
-        }
-        .habit button {
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            border-radius: 12px;
+        .complete-btn {
+            background-color: #00bfff;
+            color: white;
+            padding: 7px 14px;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
         }
-        .habit button[type="submit"].complete-btn {
-            background-color: #4caf50;
-            color: white;
-        }
-        .habit button[type="submit"].complete-btn:hover {
-            background-color: #388e3c;
-        }
-        .habit button[type="submit"].delete-btn {
+        .delete-btn {
             background-color: #ff4d4d;
             color: white;
-        }
-        .habit button[type="submit"].delete-btn:hover {
-            background-color: #cc0000;
-        }
-        canvas {
-            max-width: 100%;
-            margin-top: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 7px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
         }
         footer {
             text-align: center;
-            font-weight: 600;
-            color: white;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
             margin-top: 40px;
-            font-size: 1.1rem;
-        }
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .form-container, .habit-list {
-                width: 100%;
-                max-width: none;
-            }
+            font-size: 0.9em;
+            color: #ddd;
         }
     </style>
 </head>
@@ -630,111 +614,114 @@ INDEX.HTML
                     <button type="submit" class="delete-btn" onclick="return confirm('¿Seguro que quieres eliminar este hábito?');">🗑️ Eliminar</button>
                 </form>
 
-                <!-- aqui ponemos un canvas para la gráfica -->
-                <canvas id="chart-{{ habit.id }}" width="400" height="150"></canvas>
-                <script>
-                    const ctx{{ habit.id }} = document.getElementById('chart-{{ habit.id }}').getContext('2d');
-                    const data{{ habit.id }} = {
-                        labels: [
-                            {% if habit_progress[habit.id] is defined %}
-                                {% for d in habit_progress[habit.id] %}
-                                    "{{ d }}",
-                                {% endfor %}
-                            {% else %}
-                                "No data"
-                            {% endif %}
-                        ],
-                        datasets: [{
-                            label: 'Días completados',
-                            data: [
-                                {% if habit_progress[habit.id] is defined %}
-                                    {% for d in habit_progress[habit.id] %}
-                                        1,
-                                    {% endfor %}
-                                {% else %}
-                                    0
-                                {% endif %}
-                            ],
-                            backgroundColor: 'rgba(255, 159, 128, 0.7)'
-
-                        }]
-                    };
-                    new Chart(ctx{{ habit.id }}, {
-                        type: 'bar',
-                        data: data{{ habit.id }},
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 1,
-                                    ticks: { stepSize: 1 }
-                                }
-                            },
-                            plugins: {
-                                legend: { display: false }
-                            }
-                        }
-                    });
-                </script>
+                <!-- Gráfica -->
+                <canvas 
+                    class="habit-chart"
+                    data-dates='{{ habit_progress[habit.id]["dates"] | tojson }}'
+                    data-completed='{{ habit_progress[habit.id]["completed"] | tojson }}'
+                    width="400" 
+                    height="150"
+                ></canvas>
             </div>
         {% endfor %}
     </div>
 
     <footer>
-        Made with by Gabriela y Andrey
+        Made with ❤️ by Gabriela y Andrey
     </footer>
+
+    <script>
+      document.querySelectorAll('.habit-chart').forEach(canvas => {
+        const dates = JSON.parse(canvas.dataset.dates);
+        const completed = JSON.parse(canvas.dataset.completed);
+        const ctx = canvas.getContext('2d');
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: dates,
+            datasets: [{
+              label: 'Completado',
+              data: completed,
+              backgroundColor: '#ffa07a' // naranja claro
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 1,
+                ticks: {
+                  stepSize: 1,
+                  callback: function(value) {
+                    return value === 1 ? 'Sí' : 'No';
+                  }
+                }
+              },
+              x: {
+                ticks: {
+                  autoSkip: true,
+                  maxTicksLimit: 10
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      });
+
+      const habitsNotDone = {{ habits_not_done_today|tojson }};
+      if (habitsNotDone.length > 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Hábitos pendientes hoy',
+          html: 'Aún no has completado: <ul style="text-align:left">' +
+                habitsNotDone.map(h => `<li>${h}</li>`).join('') +
+                '</ul>',
+          confirmButtonText: '¡Voy a hacerlo!',
+          confirmButtonColor: '#3085d6',
+          background: '#fffbe6'
+        });
+      }
+    </script>
 </body>
 </html>
 
-INIT_DB.PY
-
+init_db.py---------------------------------------------------------------------------------------------------------------------------
 import sqlite3
 
 conn = sqlite3.connect('habits.db')
-cursor = conn.cursor()
+cur = conn.cursor()
 
-# crear tabla habitos
-cursor.execute('''
+cur.execute('''
 CREATE TABLE IF NOT EXISTS habits (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
-)
+    name TEXT NOT NULL,
+    description TEXT,
+    frequency TEXT NOT NULL,
+    start_date TEXT NOT NULL
+);
 ''')
 
-# crear tabla logs de habitos
-cursor.execute('''
+cur.execute('''
 CREATE TABLE IF NOT EXISTS habit_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     habit_id INTEGER NOT NULL,
     date TEXT NOT NULL,
-    FOREIGN KEY (habit_id) REFERENCES habits (id)
-)
+    FOREIGN KEY(habit_id) REFERENCES habits(id)
+);
 ''')
-
-# poner ejemplos de habitos si no existen
-cursor.execute('SELECT COUNT(*) FROM habits')
-count = cursor.fetchone()[0]
-if count == 0:
-    cursor.executemany('INSERT INTO habits (name) VALUES (?)', [
-        ('Dormir temprano',),
-        ('Beber agua',),
-        ('Ejercicio',),
-    ])
 
 conn.commit()
 conn.close()
-print("Base de datos inicializada.")
+print("Base de datos y tablas creadas.")
 
-DATABASE.PY
-
+database.py-----------------------------------------------------------------------------------------------------------------------
 import sqlite3
 
 def get_db_connection():
     conn = sqlite3.connect('habits.db')
     conn.row_factory = sqlite3.Row  # Para acceder a los datos como un diccionario
     return conn
-
-
-
-
-
